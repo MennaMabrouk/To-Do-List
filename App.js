@@ -1,20 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View } from 'react-native';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import ToDoListComponent from './component/ToDoListComponent';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const loadFonts = useCallback(async () => {
+    await Font.loadAsync({
+      'Oswald': require('./assets/fonts/Oswald.ttf'),
+    });
+    setFontsLoaded(true);
+    await SplashScreen.hideAsync();
+  }, []);
+
+  useEffect(() => {
+    loadFonts();
+  }, [loadFonts]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1 }}>
+      <ToDoListComponent />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
